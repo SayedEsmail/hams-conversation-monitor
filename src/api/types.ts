@@ -48,11 +48,3 @@ export interface MessagesResponse {
   lastEventId: number
   messages: Message[]
 }
-
-export interface TakeOverResponse {
-  conversation: Conversation
-}
-
-export interface SendMessageResponse {
-  message: Message
-}

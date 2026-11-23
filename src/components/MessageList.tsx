@@ -3,11 +3,7 @@ import { useMessages } from '../api/queries'
 import { LoadError } from './LoadError'
 import { MessageBubble } from './MessageBubble'
 
-interface MessageListProps {
-  conversationId: string
-}
-
-export function MessageList({ conversationId }: MessageListProps) {
+export function MessageList({ conversationId }: { conversationId: string }) {
   const { data, isPending, isError, error, refetch } = useMessages(conversationId)
   const bottomRef = useRef<HTMLDivElement>(null)
 

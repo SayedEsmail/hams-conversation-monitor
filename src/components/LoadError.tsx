@@ -1,9 +1,4 @@
-interface LoadErrorProps {
-  message: string
-  onRetry: () => void
-}
-
-export function LoadError({ message, onRetry }: LoadErrorProps) {
+export function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <div className="flex flex-col items-start gap-2 p-4 text-sm">
       <p className="text-red-600">{message}</p>

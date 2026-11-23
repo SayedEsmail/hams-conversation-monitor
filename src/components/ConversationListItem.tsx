@@ -2,11 +2,7 @@ import type { Conversation } from '../api/types'
 import { useAppStore } from '../store/appStore'
 import { StatusBadge } from './StatusBadge'
 
-interface ConversationListItemProps {
-  conversation: Conversation
-}
-
-export function ConversationListItem({ conversation }: ConversationListItemProps) {
+export function ConversationListItem({ conversation }: { conversation: Conversation }) {
   const { id, customer, status, lastMessage, unread } = conversation
 
   // The selector returns a boolean, so selecting another conversation re-renders
@@ -20,9 +16,7 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
         type="button"
         aria-current={isSelected}
         onClick={() => selectConversation(id)}
-        className={`flex w-full flex-col gap-1 px-4 py-3 text-start hover:bg-slate-50 ${
-          isSelected ? 'bg-blue-50 hover:bg-blue-50' : ''
-        }`}
+        className={`flex w-full flex-col gap-1 px-4 py-3 text-start ${isSelected ? 'bg-blue-50' : 'hover:bg-slate-50'}`}
       >
         <div className="flex items-center justify-between gap-2">
           {/* dir="auto": the browser picks the direction from the text itself, so an

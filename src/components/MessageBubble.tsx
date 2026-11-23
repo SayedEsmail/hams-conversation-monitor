@@ -12,11 +12,7 @@ const ROLE: Record<Role, { label: string; className: string }> = {
 // in a conversation with thousands of messages.
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
-interface MessageBubbleProps {
-  message: Message
-}
-
-export function MessageBubble({ message }: MessageBubbleProps) {
+export function MessageBubble({ message }: { message: Message }) {
   const { label, className } = ROLE[message.role]
 
   return (

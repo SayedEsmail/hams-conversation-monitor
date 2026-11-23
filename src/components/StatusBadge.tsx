@@ -9,11 +9,7 @@ const STATUS: Record<Status, { label: string; className: string }> = {
   closed: { label: 'Closed', className: 'bg-slate-200 text-slate-600' },
 }
 
-interface StatusBadgeProps {
-  status: Status
-}
-
-export function StatusBadge({ status }: StatusBadgeProps) {
+export function StatusBadge({ status }: { status: Status }) {
   const { label, className } = STATUS[status]
 
   return (

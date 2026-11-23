@@ -1,9 +1,4 @@
-import type {
-  ConversationsResponse,
-  MessagesResponse,
-  SendMessageResponse,
-  TakeOverResponse,
-} from './types'
+import type { Conversation, ConversationsResponse, Message, MessagesResponse } from './types'
 
 export const API_URL: string = import.meta.env.VITE_API_URL ?? 'http://localhost:4000'
 
@@ -40,11 +35,13 @@ export function fetchMessages(conversationId: string) {
 }
 
 export function takeOver(conversationId: string) {
-  return request<TakeOverResponse>(`/conversations/${conversationId}/takeover`, { method: 'POST' })
+  return request<{ conversation: Conversation }>(`/conversations/${conversationId}/takeover`, {
+    method: 'POST',
+  })
 }
 
 export function sendMessage(conversationId: string, text: string, clientMessageId: string) {
-  return request<SendMessageResponse>(`/conversations/${conversationId}/messages`, {
+  return request<{ message: Message }>(`/conversations/${conversationId}/messages`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text, clientMessageId }),
