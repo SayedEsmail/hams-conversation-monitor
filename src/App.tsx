@@ -1,3 +1,5 @@
+import { ConversationList } from './components/ConversationList'
+
 function App() {
   return (
     <div className="flex h-dvh flex-col bg-slate-50 text-slate-900">
@@ -7,7 +9,7 @@ function App() {
 
       <div className="flex min-h-0 flex-1">
         <aside className="w-80 shrink-0 overflow-y-auto border-e border-slate-200 bg-white">
-          <p className="p-4 text-sm text-slate-500">Conversations</p>
+          <ConversationList />
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col">

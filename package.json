@@ -11,6 +11,7 @@
     "mock": "node mock-server.mjs"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.108.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
