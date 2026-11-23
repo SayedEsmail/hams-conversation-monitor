@@ -1,4 +1,5 @@
 import { ConversationList } from './components/ConversationList'
+import { ConversationThread } from './components/ConversationThread'
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col">
-          <p className="m-auto text-sm text-slate-500">Select a conversation</p>
+          <ConversationThread />
         </main>
       </div>
     </div>
