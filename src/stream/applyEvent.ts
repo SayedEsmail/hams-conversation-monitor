@@ -1,11 +1,15 @@
 import type { Message, Role, Status, StreamEvent } from '../api/types'
 
 /**
- * One entry of a thread that arrived on the stream: a message, or a 'handoff'
- * line whose text is the reason the AI passed the conversation to a human.
+ * One entry of a thread: a message, or a 'handoff' line whose text is the reason
+ * the AI passed the conversation to a human.
  */
-export interface LiveMessage extends Omit<Message, 'role'> {
+export interface ThreadEntry extends Omit<Message, 'role'> {
   role: Role | 'handoff'
+}
+
+/** A thread entry that arrived on the stream. */
+export interface LiveMessage extends ThreadEntry {
   /**
    * The tokens of a streamed reply, each with its event id (empty for a message
    * that arrived complete). A snapshot fetched in the middle of a reply already

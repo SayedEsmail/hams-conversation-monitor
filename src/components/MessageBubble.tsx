@@ -1,4 +1,5 @@
-import type { Message, Role } from '../api/types'
+import type { Role } from '../api/types'
+import type { ThreadEntry } from '../stream/applyEvent'
 
 // self-start / self-end follow the page direction, so the customer's side and
 // the agent's side swap automatically in RTL.
@@ -12,7 +13,15 @@ const ROLE: Record<Role, { label: string; className: string }> = {
 // in a conversation with thousands of messages.
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
-export function MessageBubble({ message }: { message: Message }) {
+export function MessageBubble({ message }: { message: ThreadEntry }) {
+  if (message.role === 'handoff') {
+    return (
+      <p className="self-center rounded-full bg-amber-100 px-3 py-1 text-xs text-amber-800">
+        Handed over to a human: <bdi>{message.text}</bdi>
+      </p>
+    )
+  }
+
   const { label, className } = ROLE[message.role]
 
   return (
@@ -23,6 +32,7 @@ export function MessageBubble({ message }: { message: Message }) {
       </div>
       <p dir="auto" className="mt-1 text-sm break-words whitespace-pre-wrap">
         {message.text}
+        {message.streaming && <span className="animate-pulse"> ▍</span>}
       </p>
     </div>
   )
