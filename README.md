@@ -4,6 +4,10 @@ A live supervisor screen for AI conversations: a conversation list, a thread tha
 
 Built with React 19, TypeScript (strict), Vite, TanStack Query, Zustand, react-virtuoso, Tailwind CSS and Vitest.
 
+**Live demo:** https://monitor.sayedesmail.com
+
+The demo runs the app and the unchanged mock server on one host. The mock's data is shared by all visitors and resets every night.
+
 ## How to run it
 
 You need Node 22.12 or newer.
