@@ -71,3 +71,30 @@ test('picks up a reply that started before the stream connected', () => {
     ],
   })
 })
+
+test('a hand-off adds the reason to the thread and changes the status', () => {
+  const state = applyAll([
+    {
+      id: 1,
+      type: 'message',
+      conversationId: 'c-3',
+      message: { id: 'm-1', conversationId: 'c-3', role: 'customer', text: 'Hi', createdAt: NOW },
+    },
+    {
+      id: 2,
+      type: 'tool_call',
+      conversationId: 'c-3',
+      name: 'transfer_to_human',
+      args: { reason: 'Customer asked to speak to a person' },
+    },
+    { id: 3, type: 'status', conversationId: 'c-3', status: 'needs_human' },
+  ])
+
+  expect(state.messages['c-3']).toMatchObject([
+    { id: 'm-1', role: 'customer' },
+    { id: 'handoff-2', role: 'handoff', text: 'Customer asked to speak to a person' },
+  ])
+  expect(state.statuses['c-3']).toBe('needs_human')
+  expect(state.statuses['c-1']).toBeUndefined()
+  expect(state.lastEventId).toBe(3)
+})

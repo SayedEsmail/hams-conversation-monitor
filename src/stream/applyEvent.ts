@@ -1,7 +1,11 @@
-import type { Message, StreamEvent } from '../api/types'
+import type { Message, Role, Status, StreamEvent } from '../api/types'
 
-/** A message that arrived on the stream. */
-export interface LiveMessage extends Message {
+/**
+ * One entry of a thread that arrived on the stream: a message, or a 'handoff'
+ * line whose text is the reason the AI passed the conversation to a human.
+ */
+export interface LiveMessage extends Omit<Message, 'role'> {
+  role: Role | 'handoff'
   /**
    * The tokens of a streamed reply, each with its event id (empty for a message
    * that arrived complete). A snapshot fetched in the middle of a reply already
@@ -13,11 +17,13 @@ export interface LiveMessage extends Message {
 export interface LiveState {
   /** Id of the last event applied. */
   lastEventId: number
-  /** Messages from the stream, by conversation id, oldest first. */
+  /** Thread entries from the stream, by conversation id, oldest first. */
   messages: Record<string, LiveMessage[]>
+  /** Latest status of each conversation the stream has changed. */
+  statuses: Record<string, Status>
 }
 
-export const initialLiveState: LiveState = { lastEventId: 0, messages: {} }
+export const initialLiveState: LiveState = { lastEventId: 0, messages: {}, statuses: {} }
 
 /**
  * Returns the state after one event. It is a pure function: no clock, no network,
@@ -28,10 +34,12 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
   // so anything at or below the last applied id is a duplicate.
   if (event.id <= state.lastEventId) return state
 
-  const messages = state.messages[event.conversationId] ?? []
+  const { conversationId } = event
+  const next = { ...state, lastEventId: event.id }
+  const messages = state.messages[conversationId] ?? []
   const withMessages = (updated: LiveMessage[]): LiveState => ({
-    lastEventId: event.id,
-    messages: { ...state.messages, [event.conversationId]: updated },
+    ...next,
+    messages: { ...state.messages, [conversationId]: updated },
   })
 
   switch (event.type) {
@@ -48,7 +56,7 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
         ? { ...existing }
         : {
             id: event.messageId,
-            conversationId: event.conversationId,
+            conversationId,
             role: 'ai',
             text: '',
             createdAt: receivedAt,
@@ -67,8 +75,26 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
       )
     }
 
-    // Events we do not handle yet still move the last applied id forward.
+    // The hand-off is shown as a line in the thread, so it is stored in the
+    // thread, at the place where it happened.
+    case 'tool_call':
+      return withMessages([
+        ...messages,
+        {
+          id: `handoff-${event.id}`,
+          conversationId,
+          role: 'handoff',
+          text: event.args.reason,
+          createdAt: receivedAt,
+          tokens: [],
+        },
+      ])
+
+    case 'status':
+      return { ...next, statuses: { ...state.statuses, [conversationId]: event.status } }
+
+    // An event type this client does not know still moves the last applied id forward.
     default:
-      return { ...state, lastEventId: event.id }
+      return next
   }
 }
