@@ -17,18 +17,18 @@ function moveFocus(event: KeyboardEvent<HTMLUListElement>) {
 
 export function ConversationList() {
   const { data, isPending, isError, error, refetch } = useConversations()
-  const activity = useAppStore((state) => state.live.activity)
+  const handoffAt = useAppStore((state) => state.live.handoffAt)
   const t = useText()
 
-  // Newest first, like the server sends it. Conversations with live activity
-  // come first, most recent on top. The sort is stable, so the others keep the
-  // order they were loaded in.
+  // A conversation moves to the top when it is handed over to a human, the most
+  // recent hand-off first. The sort is stable, so all the others keep the order
+  // they were loaded in and the list does not jump on every message.
   const conversations = useMemo(
     () =>
       (data?.conversations ?? []).toSorted(
-        (a, b) => (activity[b.id] ?? 0) - (activity[a.id] ?? 0),
+        (a, b) => (handoffAt[b.id] ?? 0) - (handoffAt[a.id] ?? 0),
       ),
-    [data, activity],
+    [data, handoffAt],
   )
 
   if (isPending) {

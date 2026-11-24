@@ -31,8 +31,8 @@ test('appends tokens in order and to the right conversation', () => {
   })
   expect(state.messages['c-1'][0].streaming).toBeUndefined()
   expect(state.messages['c-2'][0]).toMatchObject({ id: 'm-2', text: 'مرحبا', streaming: true })
-  // Only the finished reply counts as list activity, like on the server.
-  expect(state.activity).toEqual({ 'c-1': 6 })
+  // Messages do not reorder the conversation list.
+  expect(state.handoffAt).toEqual({})
 })
 
 test('ignores events replayed after a resume', () => {
@@ -104,6 +104,8 @@ test('a hand-off adds the reason to the thread and changes the status', () => {
   ])
   expect(state.statuses['c-3']).toBe('needs_human')
   expect(state.statuses['c-1']).toBeUndefined()
+  // The list uses this to put the conversation on top.
+  expect(state.handoffAt).toEqual({ 'c-3': 3 })
   expect(state.lastEventId).toBe(3)
 })
 

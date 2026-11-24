@@ -32,8 +32,11 @@ export interface LiveState {
    * is the clientMessageId we sent with the request.
    */
   pending: LiveMessage[]
-  /** Id of the last event that moved each conversation to the top of the list. */
-  activity: Record<string, number>
+  /**
+   * Id of the event that last put each conversation in "needs human". The list
+   * shows these conversations first, the most recent on top.
+   */
+  handoffAt: Record<string, number>
 }
 
 export const initialLiveState: LiveState = {
@@ -41,7 +44,7 @@ export const initialLiveState: LiveState = {
   messages: {},
   statuses: {},
   pending: [],
-  activity: {},
+  handoffAt: {},
 }
 
 /**
@@ -54,15 +57,7 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
   if (event.id <= state.lastEventId) return state
 
   const { conversationId } = event
-  // The server moves a conversation to the top of its list on these events, so
-  // we do the same and the order still matches after a reload.
-  const movesToTop =
-    event.type === 'message' || event.type === 'message_end' || event.type === 'status'
-  const next = {
-    ...state,
-    lastEventId: event.id,
-    activity: movesToTop ? { ...state.activity, [conversationId]: event.id } : state.activity,
-  }
+  const next = { ...state, lastEventId: event.id }
   const messages = state.messages[conversationId] ?? []
   const withMessages = (updated: LiveMessage[]): LiveState => ({
     ...next,
@@ -128,7 +123,14 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
       ])
 
     case 'status':
-      return { ...next, statuses: { ...state.statuses, [conversationId]: event.status } }
+      return {
+        ...next,
+        statuses: { ...state.statuses, [conversationId]: event.status },
+        handoffAt:
+          event.status === 'needs_human'
+            ? { ...state.handoffAt, [conversationId]: event.id }
+            : state.handoffAt,
+      }
 
     // An event type this client does not know still moves the last applied id forward.
     default:
