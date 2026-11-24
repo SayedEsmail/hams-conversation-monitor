@@ -13,7 +13,7 @@ export function ConnectionBadge() {
 
   return (
     // role="status": a screen reader announces the text when it changes.
-    <span role="status" className="flex items-center gap-2 text-sm text-slate-600">
+    <span role="status" className="flex items-center gap-2 text-sm text-slate-500">
       <span className={`size-2 rounded-full ${DOT[connection]}`} />
       {t.connection[connection]}
     </span>

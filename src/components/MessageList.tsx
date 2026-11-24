@@ -50,7 +50,9 @@ export function MessageList({ conversationId }: { conversationId: string }) {
       followOutput="auto"
       atBottomThreshold={100}
       itemContent={(index, row) => (
-        <div className="flex flex-col px-4 py-1">
+        // max-w-6xl + mx-auto: the messages use most of the width, and on a very
+        // wide screen they stay in a column in the middle.
+        <div className="mx-auto flex max-w-6xl flex-col px-5 py-1.5">
           <MessageBubble message={row} pending={index >= thread.length} />
         </div>
       )}

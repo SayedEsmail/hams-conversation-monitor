@@ -27,7 +27,7 @@ export function TakeOverButton({ conversation }: { conversation: Conversation })
         type="button"
         disabled={status !== 'needs_human' || isPending}
         onClick={() => mutate()}
-        className="shrink-0 rounded bg-amber-700 px-3 py-1 text-sm font-medium text-white hover:bg-amber-800 disabled:bg-slate-200 disabled:text-slate-500"
+        className="shrink-0 rounded-lg bg-amber-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-amber-800 disabled:bg-slate-200 disabled:text-slate-500"
       >
         {isPending ? t.takingOver : t.takeOver}
       </button>

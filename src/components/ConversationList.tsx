@@ -45,7 +45,7 @@ export function ConversationList() {
   }
 
   return (
-    <ul onKeyDown={moveFocus} className="divide-y divide-slate-100">
+    <ul onKeyDown={moveFocus} className="divide-y divide-slate-100 border-t border-slate-100">
       {conversations.map((conversation) => (
         <ConversationListItem key={conversation.id} conversation={conversation} />
       ))}

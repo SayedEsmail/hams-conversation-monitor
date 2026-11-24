@@ -8,7 +8,7 @@ export function LoadError({ message, onRetry }: { message: string; onRetry: () =
       <p className="text-red-600">{message}</p>
       <button
         type="button"
-        className="rounded border border-slate-300 px-3 py-1 hover:bg-slate-100"
+        className="rounded-lg border border-slate-200 px-3 py-1.5 hover:bg-slate-100"
         onClick={onRetry}
       >
         {t.retry}

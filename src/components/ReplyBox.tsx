@@ -47,13 +47,13 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
   }
 
   return (
-    <form onSubmit={submit} className="border-t border-slate-200 bg-white p-3">
+    <form onSubmit={submit} className="border-t border-slate-200 bg-white px-5 py-3">
       {error && (
-        <p role="alert" className="mb-2 text-xs text-red-600">
+        <p role="alert" className="mx-auto mb-2 max-w-6xl text-xs text-red-600">
           {t.notSent} {error.message}
         </p>
       )}
-      <div className="flex gap-2">
+      <div className="mx-auto flex max-w-6xl gap-2">
         <input
           // Focus lands here after a take over, when the button the user just
           // clicked disappears.
@@ -65,12 +65,12 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
           placeholder={t.replyPlaceholder}
           value={text}
           onChange={(event) => setText(event.target.value)}
-          className="min-w-0 flex-1 rounded border border-slate-300 px-3 py-2 text-sm"
+          className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm"
         />
         <button
           type="submit"
           disabled={!text.trim()}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {t.send}
         </button>
