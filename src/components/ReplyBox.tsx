@@ -56,7 +56,7 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
       <div className="mx-auto flex max-w-6xl gap-2">
         <input
           // Focus lands here after a take over, when the button the user just
-          // clicked disappears.
+          // clicked becomes disabled.
           autoFocus
           // With text: the direction follows what the user types. Empty: it
           // follows the page, so the placeholder starts on the correct side.
