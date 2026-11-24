@@ -103,5 +103,7 @@ So if the first URL contains `since`, every automatic reconnect replays the stre
 - Keep reply drafts and errors per conversation in the store, to close the rejected-reply gap above.
 - An i18n library once the app needs plural rules or more languages, and remember the chosen language.
 - Accessibility: announce a finished AI reply to screen readers, and test with a real screen reader.
-- A layout for narrow screens.
+- A responsive layout for phones and tablets: one pane at a time, with a back button from the thread to the list.
+- Group messages that follow each other from the same sender: one name and one time per group, and a date separator between days.
+- Search and filters in the conversation list, for example show only the conversations that need a human.
 - From the backend: a "mark as read" endpoint, tool calls in the message history, error codes instead of text, and a reset signal on the stream for when event ids start again.
