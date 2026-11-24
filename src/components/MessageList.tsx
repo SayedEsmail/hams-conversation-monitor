@@ -1,4 +1,5 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
+import { Virtuoso } from 'react-virtuoso'
 import { useMessages } from '../api/queries'
 import { useAppStore } from '../store/appStore'
 import { mergeThread } from '../stream/mergeThread'
@@ -9,18 +10,15 @@ export function MessageList({ conversationId }: { conversationId: string }) {
   const { data, isPending, isError, error, refetch } = useMessages(conversationId)
   const live = useAppStore((state) => state.live.messages[conversationId])
   const pending = useAppStore((state) => state.live.pending)
-  const bottomRef = useRef<HTMLDivElement>(null)
 
   // useMemo keeps the merged list between renders and rebuilds it only when the
   // snapshot or this conversation's live entries change.
   const thread = useMemo(() => (data ? mergeThread(data, live ?? []) : []), [data, live])
-
-  // Keeps the newest message in view. useLayoutEffect runs after React has
-  // updated the DOM but before the browser paints, so the user never sees the
-  // list at the top first.
-  useLayoutEffect(() => {
-    bottomRef.current?.scrollIntoView()
-  }, [thread, pending])
+  // Replies the server has not confirmed yet go last.
+  const rows = useMemo(
+    () => [...thread, ...pending.filter((reply) => reply.conversationId === conversationId)],
+    [thread, pending, conversationId],
+  )
 
   if (isPending) {
     return <p className="m-auto text-sm text-slate-500">Loading messages…</p>
@@ -32,17 +30,23 @@ export function MessageList({ conversationId }: { conversationId: string }) {
     )
   }
 
+  // A virtual list: only the rows near the visible area exist in the DOM, however
+  // long the conversation is.
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-4">
-      {thread.map((message) => (
-        <MessageBubble key={message.id} message={message} />
-      ))}
-      {pending
-        .filter((reply) => reply.conversationId === conversationId)
-        .map((reply) => (
-          <MessageBubble key={reply.id} message={reply} pending />
-        ))}
-      <div ref={bottomRef} />
-    </div>
+    <Virtuoso
+      // A new list per conversation, so each one opens at its newest message.
+      key={conversationId}
+      className="min-h-0 flex-1"
+      data={rows}
+      computeItemKey={(_, row) => row.id}
+      initialTopMostItemIndex={{ index: 'LAST', align: 'end' }}
+      // Stay with the newest message, but only while the user is at the bottom.
+      followOutput="auto"
+      itemContent={(index, row) => (
+        <div className="flex flex-col px-4 py-1">
+          <MessageBubble message={row} pending={index >= thread.length} />
+        </div>
+      )}
+    />
   )
 }

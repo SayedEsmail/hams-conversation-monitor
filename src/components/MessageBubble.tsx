@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Role } from '../api/types'
 import type { ThreadEntry } from '../stream/applyEvent'
 
@@ -13,7 +14,16 @@ const ROLE: Record<Role, { label: string; className: string }> = {
 // in a conversation with thousands of messages.
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
-export function MessageBubble({ message, pending }: { message: ThreadEntry; pending?: boolean }) {
+// memo: React skips this component when its props are the same as last time.
+// The reducer and the merge keep an unchanged message as the same object, so a
+// new token re-renders only the bubble it belongs to.
+export const MessageBubble = memo(function MessageBubble({
+  message,
+  pending,
+}: {
+  message: ThreadEntry
+  pending?: boolean
+}) {
   if (message.role === 'handoff') {
     return (
       <p className="self-center rounded-full bg-amber-100 px-3 py-1 text-xs text-amber-800">
@@ -42,4 +52,4 @@ export function MessageBubble({ message, pending }: { message: ThreadEntry; pend
       </p>
     </div>
   )
-}
+})
