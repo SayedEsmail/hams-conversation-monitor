@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { sendMessage } from '../api/client'
 import type { Conversation } from '../api/types'
+import { useText } from '../i18n'
 import { useAppStore, useStatus } from '../store/appStore'
 import type { LiveMessage } from '../stream/applyEvent'
 
@@ -10,6 +11,7 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
   const addPending = useAppStore((state) => state.addPending)
   const removePending = useAppStore((state) => state.removePending)
   const [text, setText] = useState('')
+  const t = useText()
 
   const { mutate, error } = useMutation({
     mutationFn: (reply: LiveMessage) => sendMessage(conversation.id, reply.text, reply.id),
@@ -48,7 +50,7 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
     <form onSubmit={submit} className="border-t border-slate-200 bg-white p-3">
       {error && (
         <p role="alert" className="mb-2 text-xs text-red-600">
-          Not sent: {error.message}
+          {t.notSent} {error.message}
         </p>
       )}
       <div className="flex gap-2">
@@ -56,9 +58,11 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
           // Focus lands here after a take over, when the button the user just
           // clicked disappears.
           autoFocus
-          dir="auto"
-          aria-label="Reply"
-          placeholder="Write a reply…"
+          // With text: the direction follows what the user types. Empty: it
+          // follows the page, so the placeholder starts on the correct side.
+          dir={text ? 'auto' : undefined}
+          aria-label={t.reply}
+          placeholder={t.replyPlaceholder}
           value={text}
           onChange={(event) => setText(event.target.value)}
           className="min-w-0 flex-1 rounded border border-slate-300 px-3 py-2 text-sm"
@@ -68,7 +72,7 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
           disabled={!text.trim()}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          Send
+          {t.send}
         </button>
       </div>
     </form>

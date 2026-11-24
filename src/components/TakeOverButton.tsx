@@ -1,10 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 import { takeOver } from '../api/client'
 import type { Conversation } from '../api/types'
+import { useText } from '../i18n'
 import { useStatus } from '../store/appStore'
 
 export function TakeOverButton({ conversation }: { conversation: Conversation }) {
   const status = useStatus(conversation)
+  const t = useText()
 
   // useMutation is the counterpart of useQuery for requests that change
   // something: it runs only when `mutate` is called, and tracks pending and
@@ -18,7 +20,7 @@ export function TakeOverButton({ conversation }: { conversation: Conversation })
     <>
       {isError && (
         <span role="alert" className="text-xs text-red-600">
-          Could not take over
+          {t.takeOverFailed}
         </span>
       )}
       <button
@@ -27,7 +29,7 @@ export function TakeOverButton({ conversation }: { conversation: Conversation })
         onClick={() => mutate()}
         className="shrink-0 rounded bg-amber-700 px-3 py-1 text-sm font-medium text-white hover:bg-amber-800 disabled:bg-slate-200 disabled:text-slate-500"
       >
-        <bdi>{isPending ? 'Taking over…' : 'Take over'}</bdi>
+        {isPending ? t.takingOver : t.takeOver}
       </button>
     </>
   )

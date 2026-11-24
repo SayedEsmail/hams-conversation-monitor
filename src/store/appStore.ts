@@ -3,6 +3,8 @@ import type { Conversation } from '../api/types'
 import { initialLiveState, type LiveMessage, type LiveState } from '../stream/applyEvent'
 
 interface AppState {
+  lang: 'en' | 'ar'
+  toggleLanguage: () => void
   selectedConversationId: string | null
   selectConversation: (conversationId: string) => void
   /** How many live entries each conversation had when the user last looked at it. */
@@ -15,6 +17,8 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>()((set) => ({
+  lang: 'en',
+  toggleLanguage: () => set(({ lang }) => ({ lang: lang === 'en' ? 'ar' : 'en' })),
   selectedConversationId: null,
   selectConversation: (conversationId) =>
     set((state) => {

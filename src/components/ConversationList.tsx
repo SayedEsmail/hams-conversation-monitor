@@ -1,5 +1,6 @@
 import { useMemo, type KeyboardEvent } from 'react'
 import { useConversations } from '../api/queries'
+import { useText } from '../i18n'
 import { useAppStore } from '../store/appStore'
 import { ConversationListItem } from './ConversationListItem'
 import { LoadError } from './LoadError'
@@ -17,6 +18,7 @@ function moveFocus(event: KeyboardEvent<HTMLUListElement>) {
 export function ConversationList() {
   const { data, isPending, isError, error, refetch } = useConversations()
   const activity = useAppStore((state) => state.live.activity)
+  const t = useText()
 
   // Newest first, like the server sends it. Conversations with live activity
   // come first, most recent on top. The sort is stable, so the others keep the
@@ -30,17 +32,13 @@ export function ConversationList() {
   )
 
   if (isPending) {
-    return (
-      <p className="p-4 text-sm text-slate-500">
-        <bdi>Loading conversations…</bdi>
-      </p>
-    )
+    return <p className="p-4 text-sm text-slate-500">{t.loadingConversations}</p>
   }
 
   if (isError) {
     return (
       <LoadError
-        message={`Could not load conversations: ${error.message}`}
+        message={`${t.loadConversationsFailed} ${error.message}`}
         onRetry={() => refetch()}
       />
     )

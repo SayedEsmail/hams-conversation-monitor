@@ -1,4 +1,5 @@
 import { useConversations } from '../api/queries'
+import { useText } from '../i18n'
 import { useAppStore } from '../store/appStore'
 import { MessageList } from './MessageList'
 import { ReplyBox } from './ReplyBox'
@@ -8,10 +9,11 @@ import { TakeOverButton } from './TakeOverButton'
 export function ConversationThread() {
   const selectedConversationId = useAppStore((state) => state.selectedConversationId)
   const { data } = useConversations()
+  const t = useText()
   const conversation = data?.conversations.find((c) => c.id === selectedConversationId)
 
   if (!conversation) {
-    return <p className="m-auto text-sm text-slate-500">Select a conversation</p>
+    return <p className="m-auto text-sm text-slate-500">{t.selectConversation}</p>
   }
 
   return (

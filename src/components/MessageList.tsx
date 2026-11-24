@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Virtuoso } from 'react-virtuoso'
 import { useMessages } from '../api/queries'
+import { useText } from '../i18n'
 import { useAppStore } from '../store/appStore'
 import { mergeThread } from '../stream/mergeThread'
 import { LoadError } from './LoadError'
@@ -10,6 +11,7 @@ export function MessageList({ conversationId }: { conversationId: string }) {
   const { data, isPending, isError, error, refetch } = useMessages(conversationId)
   const live = useAppStore((state) => state.live.messages[conversationId])
   const pending = useAppStore((state) => state.live.pending)
+  const t = useText()
 
   // useMemo keeps the merged list between renders and rebuilds it only when the
   // snapshot or this conversation's live entries change.
@@ -21,16 +23,15 @@ export function MessageList({ conversationId }: { conversationId: string }) {
   )
 
   if (isPending) {
-    return (
-      <p className="m-auto text-sm text-slate-500">
-        <bdi>Loading messages…</bdi>
-      </p>
-    )
+    return <p className="m-auto text-sm text-slate-500">{t.loadingMessages}</p>
   }
 
   if (isError) {
     return (
-      <LoadError message={`Could not load messages: ${error.message}`} onRetry={() => refetch()} />
+      <LoadError
+        message={`${t.loadMessagesFailed} ${error.message}`}
+        onRetry={() => refetch()}
+      />
     )
   }
 

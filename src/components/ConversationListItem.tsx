@@ -1,4 +1,5 @@
 import type { Conversation } from '../api/types'
+import { useText } from '../i18n'
 import { useAppStore } from '../store/appStore'
 import { StatusBadge } from './StatusBadge'
 
@@ -12,6 +13,7 @@ export function ConversationListItem({ conversation }: { conversation: Conversat
   // Only this conversation's entries, so an event elsewhere does not re-render this item.
   const live = useAppStore((state) => state.live.messages[id]) ?? []
   const seen = useAppStore((state) => state.seen[id])
+  const t = useText()
 
   // The newest real message. A reply whose start we missed has only part of its text.
   const lastLive = live.findLast((entry) => entry.role !== 'handoff' && !entry.partial)
@@ -48,7 +50,7 @@ export function ConversationListItem({ conversation }: { conversation: Conversat
           {unread > 0 && (
             <span
               className="shrink-0 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white"
-              aria-label={`${unread} unread messages`}
+              aria-label={t.unread(unread)}
             >
               {unread > 99 ? '99+' : unread}
             </span>
