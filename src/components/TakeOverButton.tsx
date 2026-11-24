@@ -9,12 +9,10 @@ export function TakeOverButton({ conversation }: { conversation: Conversation })
   // useMutation is the counterpart of useQuery for requests that change
   // something: it runs only when `mutate` is called, and tracks pending and
   // error for us. There is no success handler: the server announces the new
-  // status on the stream, and that event is what hides this button.
+  // status on the stream, and that event is what disables this button again.
   const { mutate, isPending, isError } = useMutation({
     mutationFn: () => takeOver(conversation.id),
   })
-
-  if (status !== 'needs_human') return null
 
   return (
     <>
@@ -25,9 +23,9 @@ export function TakeOverButton({ conversation }: { conversation: Conversation })
       )}
       <button
         type="button"
-        disabled={isPending}
+        disabled={status !== 'needs_human' || isPending}
         onClick={() => mutate()}
-        className="shrink-0 rounded bg-amber-500 px-3 py-1 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-60"
+        className="shrink-0 rounded bg-amber-700 px-3 py-1 text-sm font-medium text-white hover:bg-amber-800 disabled:bg-slate-200 disabled:text-slate-500"
       >
         <bdi>{isPending ? 'Taking over…' : 'Take over'}</bdi>
       </button>

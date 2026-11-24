@@ -36,6 +36,7 @@ export const MessageBubble = memo(function MessageBubble({
   }
 
   const { label, className } = ROLE[message.role]
+  const state = pending ? 'Sending…' : message.streaming ? 'Typing…' : null
 
   return (
     <div
@@ -43,8 +44,8 @@ export const MessageBubble = memo(function MessageBubble({
     >
       <div className="flex items-center justify-between gap-4 text-xs text-slate-500">
         <span className="font-medium">{label}</span>
-        {pending ? (
-          <bdi>Sending…</bdi>
+        {state ? (
+          <bdi>{state}</bdi>
         ) : (
           // dir="auto": in RTL "08:48 AM" would otherwise be shown as "AM 08:48".
           <time dir="auto" dateTime={message.createdAt}>
@@ -54,7 +55,7 @@ export const MessageBubble = memo(function MessageBubble({
       </div>
       <p dir="auto" className="mt-1 text-sm break-words whitespace-pre-wrap">
         {message.text}
-        {message.streaming && <span className="animate-pulse"> ▍</span>}
+        {message.streaming && <span className="motion-safe:animate-pulse"> ▍</span>}
       </p>
     </div>
   )

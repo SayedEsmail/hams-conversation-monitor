@@ -38,7 +38,10 @@ function App() {
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <aside className="w-80 shrink-0 overflow-y-auto border-e border-slate-200 bg-white">
+        <aside
+          aria-label="Conversations"
+          className="w-80 shrink-0 overflow-y-auto border-e border-slate-200 bg-white"
+        >
           <ConversationList />
         </aside>
 

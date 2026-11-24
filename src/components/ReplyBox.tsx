@@ -53,6 +53,9 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
       )}
       <div className="flex gap-2">
         <input
+          // Focus lands here after a take over, when the button the user just
+          // clicked disappears.
+          autoFocus
           dir="auto"
           aria-label="Reply"
           placeholder="Write a reply…"

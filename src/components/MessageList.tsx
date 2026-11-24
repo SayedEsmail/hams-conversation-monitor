@@ -44,8 +44,10 @@ export function MessageList({ conversationId }: { conversationId: string }) {
       data={rows}
       computeItemKey={(_, row) => row.id}
       initialTopMostItemIndex={{ index: 'LAST', align: 'end' }}
-      // Stay with the newest message, but only while the user is at the bottom.
+      // Stay with the newest message, but only while the user is at the bottom,
+      // or within about one message of it.
       followOutput="auto"
+      atBottomThreshold={100}
       itemContent={(index, row) => (
         <div className="flex flex-col px-4 py-1">
           <MessageBubble message={row} pending={index >= thread.length} />

@@ -31,6 +31,8 @@ test('appends tokens in order and to the right conversation', () => {
   })
   expect(state.messages['c-1'][0].streaming).toBeUndefined()
   expect(state.messages['c-2'][0]).toMatchObject({ id: 'm-2', text: 'مرحبا', streaming: true })
+  // Only the finished reply counts as list activity, like on the server.
+  expect(state.activity).toEqual({ 'c-1': 6 })
 })
 
 test('ignores events replayed after a resume', () => {
