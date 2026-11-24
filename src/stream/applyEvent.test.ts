@@ -104,3 +104,28 @@ test('a hand-off adds the reason to the thread and changes the status', () => {
   expect(state.statuses['c-1']).toBeUndefined()
   expect(state.lastEventId).toBe(3)
 })
+
+test('our own reply coming back replaces its optimistic copy', () => {
+  const reply = {
+    id: 'client-1',
+    conversationId: 'c-3',
+    role: 'human' as const,
+    text: 'On it',
+    createdAt: NOW,
+    tokens: [],
+  }
+  const state = applyAll(
+    [
+      {
+        id: 1,
+        type: 'message',
+        conversationId: 'c-3',
+        message: { ...reply, id: 'm-7', clientMessageId: 'client-1' },
+      },
+    ],
+    { ...initialLiveState, pending: [reply] },
+  )
+
+  expect(state.pending).toEqual([])
+  expect(state.messages['c-3'].map((message) => message.id)).toEqual(['m-7'])
+})

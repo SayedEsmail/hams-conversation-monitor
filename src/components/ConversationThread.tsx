@@ -1,6 +1,7 @@
 import { useConversations } from '../api/queries'
 import { useAppStore } from '../store/appStore'
 import { MessageList } from './MessageList'
+import { ReplyBox } from './ReplyBox'
 import { StatusBadge } from './StatusBadge'
 import { TakeOverButton } from './TakeOverButton'
 
@@ -28,6 +29,8 @@ export function ConversationThread() {
       </header>
 
       <MessageList conversationId={conversation.id} />
+      {/* key: the draft and the error belong to one conversation. */}
+      <ReplyBox key={conversation.id} conversation={conversation} />
     </>
   )
 }

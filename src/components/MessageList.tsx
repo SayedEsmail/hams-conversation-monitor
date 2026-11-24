@@ -8,6 +8,7 @@ import { MessageBubble } from './MessageBubble'
 export function MessageList({ conversationId }: { conversationId: string }) {
   const { data, isPending, isError, error, refetch } = useMessages(conversationId)
   const live = useAppStore((state) => state.live.messages[conversationId])
+  const pending = useAppStore((state) => state.live.pending)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // useMemo keeps the merged list between renders and rebuilds it only when the
@@ -19,7 +20,7 @@ export function MessageList({ conversationId }: { conversationId: string }) {
   // list at the top first.
   useLayoutEffect(() => {
     bottomRef.current?.scrollIntoView()
-  }, [thread])
+  }, [thread, pending])
 
   if (isPending) {
     return <p className="m-auto text-sm text-slate-500">Loading messages…</p>
@@ -36,6 +37,11 @@ export function MessageList({ conversationId }: { conversationId: string }) {
       {thread.map((message) => (
         <MessageBubble key={message.id} message={message} />
       ))}
+      {pending
+        .filter((reply) => reply.conversationId === conversationId)
+        .map((reply) => (
+          <MessageBubble key={reply.id} message={reply} pending />
+        ))}
       <div ref={bottomRef} />
     </div>
   )

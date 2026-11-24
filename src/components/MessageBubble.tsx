@@ -13,7 +13,7 @@ const ROLE: Record<Role, { label: string; className: string }> = {
 // in a conversation with thousands of messages.
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
-export function MessageBubble({ message }: { message: ThreadEntry }) {
+export function MessageBubble({ message, pending }: { message: ThreadEntry; pending?: boolean }) {
   if (message.role === 'handoff') {
     return (
       <p className="self-center rounded-full bg-amber-100 px-3 py-1 text-xs text-amber-800">
@@ -25,10 +25,16 @@ export function MessageBubble({ message }: { message: ThreadEntry }) {
   const { label, className } = ROLE[message.role]
 
   return (
-    <div className={`max-w-[75%] rounded-lg border px-3 py-2 ${className}`}>
+    <div
+      className={`max-w-[75%] rounded-lg border px-3 py-2 ${className} ${pending ? 'opacity-60' : ''}`}
+    >
       <div className="flex items-center justify-between gap-4 text-xs text-slate-500">
         <span className="font-medium">{label}</span>
-        <time dateTime={message.createdAt}>{timeFormat.format(new Date(message.createdAt))}</time>
+        {pending ? (
+          'Sending…'
+        ) : (
+          <time dateTime={message.createdAt}>{timeFormat.format(new Date(message.createdAt))}</time>
+        )}
       </div>
       <p dir="auto" className="mt-1 text-sm break-words whitespace-pre-wrap">
         {message.text}

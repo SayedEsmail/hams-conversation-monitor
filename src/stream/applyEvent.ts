@@ -27,9 +27,19 @@ export interface LiveState {
   messages: Record<string, LiveMessage[]>
   /** Latest status of each conversation the stream has changed. */
   statuses: Record<string, Status>
+  /**
+   * Replies the user has sent that the stream has not confirmed yet. Their `id`
+   * is the clientMessageId we sent with the request.
+   */
+  pending: LiveMessage[]
 }
 
-export const initialLiveState: LiveState = { lastEventId: 0, messages: {}, statuses: {} }
+export const initialLiveState: LiveState = {
+  lastEventId: 0,
+  messages: {},
+  statuses: {},
+  pending: [],
+}
 
 /**
  * Returns the state after one event. It is a pure function: no clock, no network,
@@ -49,8 +59,17 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
   })
 
   switch (event.type) {
-    case 'message':
-      return withMessages([...messages, { ...event.message, tokens: [] }])
+    case 'message': {
+      const { clientMessageId } = event.message
+      return {
+        ...withMessages([...messages, { ...event.message, tokens: [] }]),
+        // Our own reply coming back. Its optimistic copy leaves in the same
+        // update that adds the real message, so it never shows twice.
+        pending: clientMessageId
+          ? state.pending.filter((reply) => reply.id !== clientMessageId)
+          : state.pending,
+      }
+    }
 
     case 'message_start':
     case 'token':

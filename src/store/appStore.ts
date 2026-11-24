@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Conversation } from '../api/types'
-import { initialLiveState, type LiveState } from '../stream/applyEvent'
+import { initialLiveState, type LiveMessage, type LiveState } from '../stream/applyEvent'
 
 interface AppState {
   selectedConversationId: string | null
@@ -9,6 +9,8 @@ interface AppState {
   seen: Record<string, number>
   /** Everything the event stream has delivered since the conversation list was loaded. */
   live: LiveState
+  addPending: (reply: LiveMessage) => void
+  removePending: (id: string) => void
   connection: 'connecting' | 'connected' | 'reconnecting'
 }
 
@@ -26,6 +28,12 @@ export const useAppStore = create<AppState>()((set) => ({
     }),
   seen: {},
   live: initialLiveState,
+  addPending: (reply) =>
+    set(({ live }) => ({ live: { ...live, pending: [...live.pending, reply] } })),
+  removePending: (id) =>
+    set(({ live }) => ({
+      live: { ...live, pending: live.pending.filter((reply) => reply.id !== id) },
+    })),
   connection: 'connecting',
 }))
 
