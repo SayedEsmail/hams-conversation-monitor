@@ -16,6 +16,8 @@ export interface LiveMessage extends ThreadEntry {
    * holds the first tokens, so the screen has to know which ones are newer.
    */
   tokens: { eventId: number; text: string }[]
+  /** The stream joined in the middle of this reply, so `text` is only its tail. */
+  partial?: boolean
 }
 
 export interface LiveState {
@@ -66,6 +68,7 @@ export function applyEvent(state: LiveState, event: StreamEvent, receivedAt: str
             createdAt: receivedAt,
             streaming: true,
             tokens: [],
+            partial: event.type !== 'message_start',
           }
 
       if (event.type === 'token') {

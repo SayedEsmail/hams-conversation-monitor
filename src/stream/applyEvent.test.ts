@@ -23,7 +23,12 @@ test('appends tokens in order and to the right conversation', () => {
 
   expect(state.lastEventId).toBe(6)
   expect(state.messages['c-1']).toHaveLength(1)
-  expect(state.messages['c-1'][0]).toMatchObject({ id: 'm-1', role: 'ai', text: 'Hello world' })
+  expect(state.messages['c-1'][0]).toMatchObject({
+    id: 'm-1',
+    role: 'ai',
+    text: 'Hello world',
+    partial: false,
+  })
   expect(state.messages['c-1'][0].streaming).toBeUndefined()
   expect(state.messages['c-2'][0]).toMatchObject({ id: 'm-2', text: 'مرحبا', streaming: true })
 })
@@ -64,6 +69,7 @@ test('picks up a reply that started before the stream connected', () => {
     role: 'ai',
     text: ' late tokens',
     streaming: true,
+    partial: true,
     createdAt: NOW,
     tokens: [
       { eventId: 40, text: ' late' },

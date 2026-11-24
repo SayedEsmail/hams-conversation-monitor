@@ -3,12 +3,25 @@ import { useAppStore } from '../store/appStore'
 import { StatusBadge } from './StatusBadge'
 
 export function ConversationListItem({ conversation }: { conversation: Conversation }) {
-  const { id, customer, status, lastMessage, unread } = conversation
+  const { id, customer } = conversation
 
   // The selector returns a boolean, so selecting another conversation re-renders
   // only the two items whose answer changed, not the whole list.
   const isSelected = useAppStore((state) => state.selectedConversationId === id)
   const selectConversation = useAppStore((state) => state.selectConversation)
+  // Only this conversation's entries, so an event elsewhere does not re-render this item.
+  const live = useAppStore((state) => state.live.messages[id]) ?? []
+  const seen = useAppStore((state) => state.seen[id])
+
+  // The newest real message. A reply whose start we missed has only part of its text.
+  const lastLive = live.findLast((entry) => entry.role !== 'handoff' && !entry.partial)
+  const lastMessage = lastLive?.text ?? conversation.lastMessage
+
+  // The server's count is from before the page loaded and stands until the
+  // conversation is first opened. After that we count the customer messages
+  // that arrived since the user last looked.
+  const newFromCustomer = live.slice(seen).filter((entry) => entry.role === 'customer').length
+  const unread = isSelected ? 0 : (seen === undefined ? conversation.unread : 0) + newFromCustomer
 
   return (
     <li>
@@ -25,7 +38,7 @@ export function ConversationListItem({ conversation }: { conversation: Conversat
           <span dir="auto" className="truncate font-medium">
             {customer}
           </span>
-          <StatusBadge status={status} />
+          <StatusBadge conversation={conversation} />
         </div>
 
         <div className="flex items-center justify-between gap-2">

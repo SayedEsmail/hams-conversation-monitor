@@ -1,4 +1,5 @@
-import type { Status } from '../api/types'
+import type { Conversation, Status } from '../api/types'
+import { useAppStore } from '../store/appStore'
 
 // Full class names on purpose: Tailwind finds classes by scanning the source
 // as text, so a name built at runtime (`bg-${color}-100`) would not be generated.
@@ -9,8 +10,10 @@ const STATUS: Record<Status, { label: string; className: string }> = {
   closed: { label: 'Closed', className: 'bg-slate-200 text-slate-600' },
 }
 
-export function StatusBadge({ status }: { status: Status }) {
-  const { label, className } = STATUS[status]
+export function StatusBadge({ conversation }: { conversation: Conversation }) {
+  // A status event from the stream is always newer than the loaded list.
+  const liveStatus = useAppStore((state) => state.live.statuses[conversation.id])
+  const { label, className } = STATUS[liveStatus ?? conversation.status]
 
   return (
     <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${className}`}>

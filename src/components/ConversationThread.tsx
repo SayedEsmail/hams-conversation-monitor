@@ -18,7 +18,7 @@ export function ConversationThread() {
         <h2 dir="auto" className="truncate font-semibold">
           {conversation.customer}
         </h2>
-        <StatusBadge status={conversation.status} />
+        <StatusBadge conversation={conversation} />
       </header>
 
       <MessageList conversationId={conversation.id} />
