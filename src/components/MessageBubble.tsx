@@ -26,7 +26,10 @@ export const MessageBubble = memo(function MessageBubble({
 }) {
   if (message.role === 'handoff') {
     return (
-      <p className="self-center rounded-full bg-amber-100 px-3 py-1 text-xs text-amber-800">
+      <p
+        dir="ltr"
+        className="self-center rounded-full bg-amber-100 px-3 py-1 text-xs text-amber-800"
+      >
         Handed over to a human: <bdi>{message.text}</bdi>
       </p>
     )
@@ -41,9 +44,12 @@ export const MessageBubble = memo(function MessageBubble({
       <div className="flex items-center justify-between gap-4 text-xs text-slate-500">
         <span className="font-medium">{label}</span>
         {pending ? (
-          'Sending…'
+          <bdi>Sending…</bdi>
         ) : (
-          <time dateTime={message.createdAt}>{timeFormat.format(new Date(message.createdAt))}</time>
+          // dir="auto": in RTL "08:48 AM" would otherwise be shown as "AM 08:48".
+          <time dir="auto" dateTime={message.createdAt}>
+            {timeFormat.format(new Date(message.createdAt))}
+          </time>
         )}
       </div>
       <p dir="auto" className="mt-1 text-sm break-words whitespace-pre-wrap">

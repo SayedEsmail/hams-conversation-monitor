@@ -6,7 +6,11 @@ export function ConversationList() {
   const { data, isPending, isError, error, refetch } = useConversations()
 
   if (isPending) {
-    return <p className="p-4 text-sm text-slate-500">Loading conversations…</p>
+    return (
+      <p className="p-4 text-sm text-slate-500">
+        <bdi>Loading conversations…</bdi>
+      </p>
+    )
   }
 
   if (isError) {

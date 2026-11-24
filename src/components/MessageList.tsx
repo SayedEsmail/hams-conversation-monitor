@@ -21,7 +21,11 @@ export function MessageList({ conversationId }: { conversationId: string }) {
   )
 
   if (isPending) {
-    return <p className="m-auto text-sm text-slate-500">Loading messages…</p>
+    return (
+      <p className="m-auto text-sm text-slate-500">
+        <bdi>Loading messages…</bdi>
+      </p>
+    )
   }
 
   if (isError) {

@@ -13,7 +13,9 @@ export function ConnectionBadge() {
     // role="status": a screen reader announces the text when it changes.
     <span role="status" className="flex items-center gap-2 text-sm text-slate-600">
       <span className={`size-2 rounded-full ${className}`} />
-      {label}
+      {/* bdi: the label is English, so it keeps its own direction. Without it
+          the "…" would jump to the other end of the word in RTL. */}
+      <bdi>{label}</bdi>
     </span>
   )
 }

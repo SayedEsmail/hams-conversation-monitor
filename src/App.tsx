@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useConversations } from './api/queries'
 import { ConnectionBadge } from './components/ConnectionBadge'
 import { ConversationList } from './components/ConversationList'
@@ -17,11 +17,24 @@ function App() {
     return connectStream(startId)
   }, [startId])
 
+  const [dir, setDir] = useState<'ltr' | 'rtl'>('ltr')
+
   return (
-    <div className="flex h-dvh flex-col bg-slate-50 text-slate-900">
+    // The whole layout follows this one attribute, because the styles only use
+    // start and end, never left and right.
+    <div dir={dir} className="flex h-dvh flex-col bg-slate-50 text-slate-900">
       <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
         <h1 className="text-lg font-semibold">Conversation Monitor</h1>
-        <ConnectionBadge />
+        <div className="flex items-center gap-4">
+          <ConnectionBadge />
+          <button
+            type="button"
+            onClick={() => setDir(dir === 'ltr' ? 'rtl' : 'ltr')}
+            className="rounded border border-slate-300 px-2 py-1 text-sm hover:bg-slate-100"
+          >
+            {dir === 'ltr' ? 'Switch to RTL' : 'Switch to LTR'}
+          </button>
+        </div>
       </header>
 
       <div className="flex min-h-0 flex-1">

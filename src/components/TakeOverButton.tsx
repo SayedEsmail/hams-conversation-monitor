@@ -29,7 +29,7 @@ export function TakeOverButton({ conversation }: { conversation: Conversation })
         onClick={() => mutate()}
         className="shrink-0 rounded bg-amber-500 px-3 py-1 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-60"
       >
-        {isPending ? 'Taking over…' : 'Take over'}
+        <bdi>{isPending ? 'Taking over…' : 'Take over'}</bdi>
       </button>
     </>
   )
