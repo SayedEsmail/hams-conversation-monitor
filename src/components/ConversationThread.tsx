@@ -2,6 +2,7 @@ import { useConversations } from '../api/queries'
 import { useAppStore } from '../store/appStore'
 import { MessageList } from './MessageList'
 import { StatusBadge } from './StatusBadge'
+import { TakeOverButton } from './TakeOverButton'
 
 export function ConversationThread() {
   const selectedConversationId = useAppStore((state) => state.selectedConversationId)
@@ -18,7 +19,12 @@ export function ConversationThread() {
         <h2 dir="auto" className="truncate font-semibold">
           {conversation.customer}
         </h2>
-        <StatusBadge conversation={conversation} />
+        <div className="flex shrink-0 items-center gap-2">
+          {/* key: another conversation gets a new button, so a pending or failed
+              request of the previous one does not carry over. */}
+          <TakeOverButton key={conversation.id} conversation={conversation} />
+          <StatusBadge conversation={conversation} />
+        </div>
       </header>
 
       <MessageList conversationId={conversation.id} />

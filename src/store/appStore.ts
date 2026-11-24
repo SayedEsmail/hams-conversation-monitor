@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { Conversation } from '../api/types'
 import { initialLiveState, type LiveState } from '../stream/applyEvent'
 
 interface AppState {
@@ -27,3 +28,8 @@ export const useAppStore = create<AppState>()((set) => ({
   live: initialLiveState,
   connection: 'connecting',
 }))
+
+/** A status event from the stream is always newer than the loaded list. */
+export function useStatus(conversation: Conversation) {
+  return useAppStore((state) => state.live.statuses[conversation.id]) ?? conversation.status
+}
