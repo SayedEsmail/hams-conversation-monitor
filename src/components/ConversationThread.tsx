@@ -5,6 +5,7 @@ import { useAppStore, useStatus } from '../store/appStore'
 import { Avatar } from './Avatar'
 import { MessageList } from './MessageList'
 import { ReplyBox } from './ReplyBox'
+import { StopButton } from './StopButton'
 import { TakeOverButton } from './TakeOverButton'
 
 // The line under the name: the status, or "AI is typing…" while a reply streams.
@@ -45,6 +46,7 @@ export function ConversationThread() {
         </div>
         {/* key: another conversation gets a new button, so a pending or failed
             request of the previous one does not carry over. */}
+        <StopButton conversationId={conversation.id} />
         <TakeOverButton key={conversation.id} conversation={conversation} />
       </header>
 

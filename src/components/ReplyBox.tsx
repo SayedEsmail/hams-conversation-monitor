@@ -8,6 +8,7 @@ import type { LiveMessage } from '../stream/applyEvent'
 
 export function ReplyBox({ conversation }: { conversation: Conversation }) {
   const status = useStatus(conversation)
+  const stopped = useAppStore((state) => state.stopped[conversation.id])
   const addPending = useAppStore((state) => state.addPending)
   const removePending = useAppStore((state) => state.removePending)
   const [text, setText] = useState('')
@@ -30,7 +31,7 @@ export function ReplyBox({ conversation }: { conversation: Conversation }) {
     // swaps it for the optimistic copy.
   })
 
-  if (status !== 'human') return null
+  if (status !== 'human' || stopped) return null
 
   function submit(event: FormEvent) {
     event.preventDefault()

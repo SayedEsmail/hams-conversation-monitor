@@ -14,6 +14,14 @@ interface AppState {
   addPending: (reply: LiveMessage) => void
   removePending: (id: string) => void
   connection: 'connecting' | 'connected' | 'reconnecting'
+  /**
+   * Conversations the user stopped, each with the live entries it had at that
+   * moment. The thread shows these instead of the newest ones, and the reply
+   * box is hidden. The server has no request to give a conversation back, so
+   * this lives in the client only.
+   */
+  stopped: Record<string, LiveMessage[]>
+  toggleStopped: (conversationId: string) => void
 }
 
 export const useAppStore = create<AppState>()((set) => ({
@@ -39,6 +47,14 @@ export const useAppStore = create<AppState>()((set) => ({
       live: { ...live, pending: live.pending.filter((reply) => reply.id !== id) },
     })),
   connection: 'connecting',
+  stopped: {},
+  toggleStopped: (conversationId) =>
+    set((state) => {
+      const stopped = { ...state.stopped }
+      if (stopped[conversationId]) delete stopped[conversationId]
+      else stopped[conversationId] = state.live.messages[conversationId] ?? []
+      return { stopped }
+    }),
 }))
 
 /** A status event from the stream is always newer than the loaded list. */

@@ -32,6 +32,8 @@ const en = {
   reply: 'Reply',
   replyPlaceholder: 'Write a reply…',
   send: 'Send',
+  stop: 'Stop',
+  resume: 'Resume',
   // One formatter per language, created once: building one per message would be
   // wasteful in a conversation with thousands of messages.
   time: new Intl.DateTimeFormat('en', timeOptions),
@@ -71,6 +73,8 @@ const ar: typeof en = {
   reply: 'الرد',
   replyPlaceholder: 'اكتب رداً…',
   send: 'إرسال',
+  stop: 'إيقاف',
+  resume: 'متابعة',
   time: new Intl.DateTimeFormat('ar', timeOptions),
 }
 

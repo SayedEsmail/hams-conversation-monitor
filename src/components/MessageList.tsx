@@ -9,7 +9,10 @@ import { MessageBubble } from './MessageBubble'
 
 export function MessageList({ conversationId }: { conversationId: string }) {
   const { data, isPending, isError, error, refetch } = useMessages(conversationId)
-  const live = useAppStore((state) => state.live.messages[conversationId])
+  // A stopped conversation keeps showing the entries it had when it was stopped.
+  const live = useAppStore(
+    (state) => state.stopped[conversationId] ?? state.live.messages[conversationId],
+  )
   const pending = useAppStore((state) => state.live.pending)
   const t = useText()
 
